@@ -5,14 +5,16 @@ import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class RankPage extends BasePage {
+public class RankSection extends BasePage {
+    By rankSection = AppiumBy.xpath("//android.view.ViewGroup[@content-desc=\"rank-progress-card\"]/android.view.ViewGroup[1]");
+    String rankProgressCardDescription = "rank-progress-card";
     By title = AppiumBy.accessibilityId("rank-progress-title");
-    By description = AppiumBy.accessibilityId("rank-progress-description");
+    By description = AppiumBy.accessibilityId(rankProgressCardDescription);
     By icon = AppiumBy.accessibilityId("rank-6");
     By progressAndPerformance = AppiumBy.accessibilityId("rank-see-progress");
     By progressBar = AppiumBy.accessibilityId("rank-progress-bar");
 
-    public RankPage(AndroidDriver androidDriver) {
+    public RankSection(AndroidDriver androidDriver) {
         super(androidDriver);
     }
 
@@ -34,5 +36,13 @@ public class RankPage extends BasePage {
 
     public WebElement getProgressBar() {
         return driver.findElement(progressBar);
+    }
+
+    public String getRankProgressCardDescription() {
+        return rankProgressCardDescription;
+    }
+
+    public WebElement getRankSection() {
+        return driver.findElement(rankSection);
     }
 }

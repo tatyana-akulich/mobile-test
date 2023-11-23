@@ -1,6 +1,7 @@
 package by.itechart;
 
 import by.itechart.pages.*;
+import by.itechart.util.Parser;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.openqa.selenium.WebElement;
@@ -12,18 +13,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DashboardTest extends BaseTest {
     DashboardPage dashboardPage;
-    CardPage cardPage;
-    CoachesPage coachesPage;
-    TeamsOverviewPage teamsOverviewPage;
-
     @Test
     public void testDashboard() {
         log.info("Start Dashboard test");
         log.info("Login with valid credentials");
-        login();
+        LoginPage loginPage = new LoginPage(driver);
+        loginPage.login();
         dashboardPage = new DashboardPage(driver);
         log.debug("Wait for page loading");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(dashboardPage.getFqvCardLocator()));
+        wait.until(ExpectedConditions.visibilityOfElementLocated(dashboardPage.cardSection().getFqvCardLocator()));
         log.info("Verify dashboard elements presence");
         verifyPresenceOfDashboardElements();
         log.info("Verify rank progress card elements");
@@ -40,98 +38,95 @@ public class DashboardTest extends BaseTest {
         log.debug("Check that greeting card is displayed");
         assertTrue(dashboardPage.getGreetingSection().isDisplayed());
         log.debug("Check that rank section is displayed");
-        assertTrue(dashboardPage.getRankSection().isDisplayed());
+        assertTrue(dashboardPage.rankSection().getRankSection().isDisplayed());
         log.debug("Check that Frontline Qualifying Volume card is displayed");
-        assertTrue(dashboardPage.getFqvCard().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getFqvCard().isDisplayed());
         log.warn("Fling to card Generation 0 Volume");
-        dashboardPage.flingToCard("Generation 0 Volume");
+        dashboardPage.cardSection().scrollToCard("G0V-card");
         log.debug("Check that card Generation 0 Volume is displayed");
-        assertTrue(dashboardPage.getG0vCard().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getG0vCard().isDisplayed());
         log.warn("Fling to card Total Generation Volume");
-        dashboardPage.flingToCard("Total Generation Volume");
+        dashboardPage.cardSection().scrollToCard("TGV-card");
         log.debug("Check that Total Generation Volume card is displayed");
-        assertTrue(dashboardPage.getTgvCard().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getTgvCard().isDisplayed());
         log.debug("Check that coaches section is displayed");
-        assertTrue(dashboardPage.getCoachesSection().isDisplayed());
+        assertTrue(dashboardPage.coachesSection().getCoachesSection().isDisplayed());
         log.warn("Scroll to teams overview");
-        WebElement teamsOverview = dashboardPage.scrollToSection(dashboardPage.getTeamsOverviewDescription());
+        WebElement teamsOverview = dashboardPage.scrollToSection(dashboardPage.teamsOverviewSection().getTeamsOverviewDescription());
         log.debug("Check that teams overview section is displayed");
         assertTrue(teamsOverview.isDisplayed());
         log.warn("Scroll to logo");
-        WebElement logo = dashboardPage.scrollToSection(dashboardPage.getLogoDescription());
+        WebElement logo = dashboardPage.scrollToSection(dashboardPage.logoSection().getLogoDescription());
         log.debug("Check that logo is displayed");
         assertTrue(logo.isDisplayed());
     }
 
     void verifyRankProgressCard() {
         log.warn("Scroll to rank progress section");
-        dashboardPage.scrollToSection(dashboardPage.getRankProgressCardDescription());
-        RankPage rankPage = new RankPage(driver);
+        dashboardPage.scrollToSection(dashboardPage.rankSection().getRankProgressCardDescription());
         log.debug("Check that title is displayed");
-        assertTrue(rankPage.getTitle().isDisplayed());
+        assertTrue(dashboardPage.rankSection().getTitle().isDisplayed());
         log.debug("Check that description is displayed");
-        assertTrue(rankPage.getDescription().isDisplayed());
+        assertTrue(dashboardPage.rankSection().getDescription().isDisplayed());
         log.debug("Check that info icon is displayed");
-        assertTrue(rankPage.getIcon().isDisplayed());
+        assertTrue(dashboardPage.rankSection().getIcon().isDisplayed());
         log.debug("Check that progress and performance is displayed");
-        assertTrue(rankPage.getProgressAndPerformance().isDisplayed());
+        assertTrue(dashboardPage.rankSection().getProgressAndPerformance().isDisplayed());
         log.debug("Check that progress bar is displayed");
-        assertTrue(rankPage.getProgressBar().isDisplayed());
+        assertTrue(dashboardPage.rankSection().getProgressBar().isDisplayed());
     }
 
     void verifySlidingCards() {
         log.warn("Scroll to cards section");
         dashboardPage.scrollToCards();
         log.warn("Fling to Frontline Qualifying Volume");
-        dashboardPage.flingToCard("Frontline Qualifying Volume");
-        cardPage = new CardPage(driver);
+        dashboardPage.cardSection().scrollToCard("FQV-card");
         log.debug("Check Frontline Qualifying Volume elements");
         checkCard("Frontline Qualifying Volume");
-        dashboardPage.flingToCard("Generation 0 Volume");
+        dashboardPage.cardSection().scrollToCard("G0V-card");
         log.debug("Check Generation 0 Volume elements");
         checkCard("Generation 0 Volume");
-        dashboardPage.flingToCard("Total Generation Volume");
+        dashboardPage.cardSection().scrollToCard("TGV-card");
         log.debug("Check Total Generation Volume elements");
         checkCard("Total Generation Volume");
     }
 
     void checkCard(String title) {
         log.debug("Check that {} title is displayed", title);
-        assertTrue(cardPage.getTitle().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getTitle().isDisplayed());
         log.debug("Check that {} title is right", title);
-        assertEquals(cardPage.getTitle().getText(), title);
+        assertEquals(dashboardPage.cardSection().getTitle().getText(), title);
         log.debug("Check that {} main value is displayed", title);
-        assertTrue(cardPage.getMainValue().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getMainValue().isDisplayed());
         log.debug("Check that {} main value is not negative", title);
-        assertTrue(Double.parseDouble(cardPage.getMainValue().getText().replaceAll(",", ".")) >= 0);
+        assertTrue(Parser.parseNumberWithCommaToDouble(dashboardPage.cardSection().getMainValue().getText()) >= 0);
         log.debug("Check that {} info icon is displayed", title);
-        assertTrue(cardPage.getInfoIcon().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getInfoIcon().isDisplayed());
         log.debug("Check that {} this month title is displayed", title);
-        assertTrue(cardPage.getThisMonthTitle().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getThisMonthTitle().isDisplayed());
         log.debug("Check that {} this month value is displayed", title);
-        assertTrue(cardPage.getThisMonthValue().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getThisMonthValue().isDisplayed());
         log.debug("Check that {} this month value is not negative", title);
-        assertTrue(Double.parseDouble(cardPage.getThisMonthValue().getText().replaceAll(",", ".")) >= 0);
+        assertTrue(Parser.parseNumberWithCommaToDouble(dashboardPage.cardSection().getThisMonthValue().getText()) >= 0);
         log.debug("Check that {} same time last month title is displayed", title);
-        assertTrue(cardPage.getSameTimeLastMonthTitle().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getSameTimeLastMonthTitle().isDisplayed());
         log.debug("Check that {} same time last month value is displayed", title);
-        assertTrue(cardPage.getSameTimeLastMonthValue().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getSameTimeLastMonthValue().isDisplayed());
         log.debug("Check that {} last month title is displayed", title);
-        assertTrue(cardPage.getLastMonthTitle().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getLastMonthTitle().isDisplayed());
         log.debug("Check that {} last month value is displayed", title);
-        assertTrue(cardPage.getLastMonthValue().isDisplayed());
+        assertTrue(dashboardPage.cardSection().getLastMonthValue().isDisplayed());
         log.debug("Check that {} last month value is not negative", title);
-        assertTrue(Double.parseDouble(cardPage.getLastMonthValue().getText().replaceAll(",", ".")) >= 0);
+        assertTrue(Parser.parseNumberWithCommaToDouble(dashboardPage.cardSection().getLastMonthValue().getText()) >= 0);
     }
 
     void verifyCoachesSection() {
-        coachesPage = new CoachesPage(driver);
         log.warn("Scroll to teams section, so that coaches are displayed");
-        dashboardPage.scrollToSection(dashboardPage.getTeamsOverviewDescription());
+        dashboardPage.scrollToSection(dashboardPage.teamsOverviewSection().getTeamsOverviewDescription());
         log.debug("Check that title is displayed");
-        assertTrue(coachesPage.getTitle().isDisplayed());
+        assertTrue(dashboardPage.coachesSection().getTitle().isDisplayed());
         log.debug("Check that info icon is displayed");
-        assertTrue(coachesPage.getInfoIcon().isDisplayed());
+        assertTrue(dashboardPage.coachesSection().getInfoIcon().isDisplayed());
         log.debug("Check new-frontline line");
         checkCoachesLine("new-frontline");
         log.debug("Check all-frontline line");
@@ -148,30 +143,29 @@ public class DashboardTest extends BaseTest {
 
     void checkCoachesLine(String title) {
         log.debug("Check that {} title is displayed", title);
-        assertTrue(coachesPage.getTitle(title).isDisplayed());
+        assertTrue(dashboardPage.coachesSection().getTitle(title).isDisplayed());
         log.debug("Check that {} value is displayed", title);
-        assertTrue(coachesPage.getValue(title).isDisplayed());
+        assertTrue(dashboardPage.coachesSection().getValue(title).isDisplayed());
         log.debug("Check that {} value is not negative", title);
-        assertTrue(Double.parseDouble(coachesPage.getValue(title).getText().replaceAll(",", ".")) >= 0);
+        assertTrue(Parser.parseNumberWithCommaToDouble(dashboardPage.coachesSection().getValue(title).getText()) >= 0);
     }
 
     void checkTeamsOverviewLine(String title) {
         log.debug("Check that {} title is displayed", title);
-        assertTrue(teamsOverviewPage.getTitle(title).isDisplayed());
+        assertTrue(dashboardPage.teamsOverviewSection().getTitle(title).isDisplayed());
         log.debug("Check that {} value is displayed", title);
-        assertTrue(teamsOverviewPage.getValue(title).isDisplayed());
+        assertTrue(dashboardPage.teamsOverviewSection().getValue(title).isDisplayed());
         log.debug("Check that {} value is not negative", title);
-        assertTrue(Double.parseDouble(teamsOverviewPage.getValue(title).getText().replaceAll(",", ".")) >= 0);
+        assertTrue(Parser.parseNumberWithCommaToDouble(dashboardPage.teamsOverviewSection().getValue(title).getText()) >= 0);
     }
 
     void verifyTeamsOverviewSection() {
-        teamsOverviewPage = new TeamsOverviewPage(driver);
         log.warn("Scroll to logo, so that teams section is displayed");
-        dashboardPage.scrollToSection(dashboardPage.getLogoDescription());
+        dashboardPage.scrollToSection(dashboardPage.logoSection().getLogoDescription());
         log.debug("Check that title is displayed");
-        assertTrue(teamsOverviewPage.getTitle().isDisplayed());
+        assertTrue(dashboardPage.teamsOverviewSection().getTitle().isDisplayed());
         log.debug("Check that info icon is displayed");
-        assertTrue(teamsOverviewPage.getInfoIcon().isDisplayed());
+        assertTrue(dashboardPage.teamsOverviewSection().getInfoIcon().isDisplayed());
         log.debug("Check senior-coach line");
         checkTeamsOverviewLine("senior-coach");
         log.debug("Check executive-director line");

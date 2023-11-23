@@ -11,7 +11,6 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.net.MalformedURLException;
@@ -60,12 +59,5 @@ public class BaseTest {
         return new AndroidDriver(
                 new URL("http://127.0.0.1:4723"), options
         );
-    }
-
-    public void login() {
-        LoginPage loginPage = new LoginPage(driver);
-        log.warn("Wait until login page is loaded");
-        wait.until(ExpectedConditions.visibilityOfElementLocated(loginPage.getLoginInput()));
-        loginPage.enterValidLogin().enterValidPassword().clickLoginButton();
     }
 }

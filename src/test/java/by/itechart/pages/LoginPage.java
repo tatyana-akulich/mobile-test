@@ -5,6 +5,7 @@ import io.appium.java_client.AppiumBy;
 import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
 
 public class LoginPage extends BasePage {
     By loginInput = AppiumBy.accessibilityId("login-username-input");
@@ -33,5 +34,11 @@ public class LoginPage extends BasePage {
 
     public By getLoginInput() {
         return loginInput;
+    }
+
+    public void login(){
+        log.warn("Wait until login page is loaded");
+        wait.until(ExpectedConditions.visibilityOfElementLocated(getLoginInput()));
+        enterValidLogin().enterValidPassword().clickLoginButton();
     }
 }

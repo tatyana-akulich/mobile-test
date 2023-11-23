@@ -5,7 +5,10 @@ import io.appium.java_client.android.AndroidDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
-public class CardPage extends BasePage {
+public class CardSection extends BasePage {
+    By fqvCard = AppiumBy.accessibilityId("FQV-card");
+    By g0vCard = AppiumBy.accessibilityId("G0V-card");
+    By tgvCard = AppiumBy.accessibilityId("TGV-card");
     By title = AppiumBy.accessibilityId("card-title");
     By mainValue = AppiumBy.accessibilityId("card-main-value");
     By infoIcon = AppiumBy.xpath("(//android.widget.TextView[@content-desc=\"info\"])[1]");
@@ -15,10 +18,29 @@ public class CardPage extends BasePage {
     By sameTimeLastMonthValue = AppiumBy.accessibilityId("card-same-last-month-value");
     By lastMonthTitle = AppiumBy.accessibilityId("card-last-month-total-title");
     By lastMonthValue = AppiumBy.accessibilityId("card-last-month-total-value");
+    String scrollCardIntoViewLocator = "new UiScrollable (new UiSelector().className(\"android.widget.HorizontalScrollView\"))" +
+            ".setAsHorizontalList().scrollIntoView(new UiSelector().description(\"%s\"))";
 
-    public CardPage(AndroidDriver androidDriver) {
+    public CardSection(AndroidDriver androidDriver) {
         super(androidDriver);
     }
+
+    public WebElement getFqvCard() {
+        return driver.findElement(fqvCard);
+    }
+
+    public By getFqvCardLocator() {
+        return fqvCard;
+    }
+
+    public WebElement getG0vCard() {
+        return driver.findElement(g0vCard);
+    }
+
+    public WebElement getTgvCard() {
+        return driver.findElement(tgvCard);
+    }
+
 
     public WebElement getTitle() {
         return driver.findElement(title);
@@ -54,5 +76,13 @@ public class CardPage extends BasePage {
 
     public WebElement getSameTimeLastMonthValue() {
         return driver.findElement(sameTimeLastMonthValue);
+    }
+
+    public void scrollToCard(String title) {
+        if (platform.equals("android")) {
+            driver.findElement(AppiumBy.androidUIAutomator(String.format(scrollCardIntoViewLocator, title)));
+        } else if (platform.equals("ios")) {
+            driver.findElement(By.id(""));
+        }
     }
 }
