@@ -1,7 +1,7 @@
 package by.itechart.pages;
 
 import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -14,8 +14,8 @@ public class RankSection extends BasePage {
     By progressAndPerformance = AppiumBy.accessibilityId("rank-see-progress");
     By progressBar = AppiumBy.accessibilityId("rank-progress-bar");
 
-    public RankSection(AndroidDriver androidDriver) {
-        super(androidDriver);
+    public RankSection(AppiumDriver appiumDriver) {
+        super(appiumDriver);
     }
 
     public WebElement getTitle() {

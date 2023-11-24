@@ -1,7 +1,7 @@
 package by.itechart.pages;
 
 import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -12,8 +12,8 @@ public class CoachesSection extends BasePage {
     String lineTitle = "new UiSelector().description(\"metric-%s-coaches\").childSelector(new UiSelector().description(\"metric-title\"))";
     String lineValue = "new UiSelector().description(\"metric-%s-coaches\").childSelector(new UiSelector().description(\"metric-value\"))";
 
-    public CoachesSection(AndroidDriver androidDriver) {
-        super(androidDriver);
+    public CoachesSection(AppiumDriver appiumDriver) {
+        super(appiumDriver);
     }
 
     public WebElement getCoachesSection() {

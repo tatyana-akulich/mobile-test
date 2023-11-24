@@ -1,7 +1,7 @@
 package by.itechart.pages;
 
 import io.appium.java_client.AppiumBy;
-import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebElement;
 
@@ -21,8 +21,8 @@ public class CardSection extends BasePage {
     String scrollCardIntoViewLocator = "new UiScrollable (new UiSelector().className(\"android.widget.HorizontalScrollView\"))" +
             ".setAsHorizontalList().scrollIntoView(new UiSelector().description(\"%s\"))";
 
-    public CardSection(AndroidDriver androidDriver) {
-        super(androidDriver);
+    public CardSection(AppiumDriver appiumDriver) {
+        super(appiumDriver);
     }
 
     public WebElement getFqvCard() {
